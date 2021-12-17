@@ -15,6 +15,7 @@ app.use(express.json())
 
 app.get('/', (req,res) => {
     res.sendFile(path.join(__dirname, '/public/index.html'))
+    rollbar.info('the index.html was served sucessfully')
 })
 
 app.get('/styles', function(req,res) {
@@ -28,6 +29,7 @@ app.get('/js', function(req,res) {
 app.get('/api/robots', (req, res) => {
     try {
         res.status(200).send(botsArr)
+        rollbar.info('botsArr sent sucessfully')
     } catch (error) {
         console.log('ERROR GETTING BOTS', error)
         res.sendStatus(400)
@@ -40,6 +42,7 @@ app.get('/api/robots/five', (req, res) => {
         let choices = shuffled.slice(0, 5)
         let compDuo = shuffled.slice(6, 8)
         res.status(200).send({choices, compDuo})
+        rollbar.info('sucessfully shuffled robots array')
     } catch (error) {
         console.log('ERROR GETTING FIVE BOTS', error)
         res.sendStatus(400)
@@ -80,11 +83,15 @@ app.post('/api/duel', (req, res) => {
 app.get('/api/player', (req, res) => {
     try {
         res.status(200).send(playerRecord)
+        rollbar.info('playerRecord sent sucessfully')
     } catch (error) {
         console.log('ERROR GETTING PLAYER STATS', error)
         res.sendStatus(400)
     }
 })
+
+
+app.use(rollbar.errorHandler())
 
 const port = process.env.PORT || 3000
 
